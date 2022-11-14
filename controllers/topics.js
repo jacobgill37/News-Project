@@ -6,6 +6,6 @@ exports.getTopics = (req, res, next) => {
       res.send({ topics });
     })
     .catch((err) => {
-      console.log(err);
+      next(err);
     });
 };
