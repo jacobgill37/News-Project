@@ -1,4 +1,4 @@
 const { getTopics } = require("./topics.js");
-const { getArticles } = require("./articles.js");
+const { getArticles, getArticleById } = require("./articles.js");
 
-module.exports = { getTopics, getArticles };
+module.exports = { getTopics, getArticles, getArticleById };

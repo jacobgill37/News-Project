@@ -46,12 +46,47 @@ describe("GET /api/articles", () => {
         });
       });
   });
-  test('200: should sort by date DESC', () => {
+  test("200: should sort by date DESC", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
-      .then(({body}) => {
-        expect(body.articles).toBeSortedBy("created_at", {descending: true})
-      })
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id", () => {
+  test("200: should respond with the given article", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toMatchObject({
+          author: expect.any(String),
+          title: expect.any(String),
+          article_id: expect.any(Number),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          body: expect.any(String),
+        });
+      });
+  });
+  test("404: Should respond with 404 if passed a non-existent id", () => {
+    return request(app)
+      .get("/api/articles/1000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found");
+      });
+  });
+  test("400: Should respond with 400 if passed a wrong datatype", () => {
+    return request(app)
+      .get("/api/articles/notANumber")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query datatype");
+      });
   });
 });
