@@ -3,6 +3,7 @@ const {
   getTopics,
   getArticles,
   getArticleById,
+  getCommentsOfArticle,
 } = require("./controllers/index.js");
 
 const app = express();
@@ -28,6 +29,11 @@ app.use((err, req, res, next) => {
   } else {
     next(err);
   }
+});
+
+app.use((err, req, res, next) => {
+  console.log(err);
+  res.status(500).send("server error!");
 });
 
 app.use((err, req, res, next) => {
