@@ -230,3 +230,80 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("200: updates vote count passed positive num", () => {
+    const newVotes = { inc_votes: 10 };
+    return request(app)
+      .patch("/api/articles/3")
+      .send(newVotes)
+      .then(({ body }) => {
+        expect(body.article).toEqual({
+          article_id: 3,
+          title: "Eight pug gifs that remind me of mitch",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "some gifs",
+          created_at: "2020-11-03T09:12:00.000Z",
+          votes: 10,
+        });
+      });
+  });
+  test("200: updates vote count passed negative num", () => {
+    const newVotes = { inc_votes: -10 };
+    return request(app)
+      .patch("/api/articles/3")
+      .send(newVotes)
+      .then(({ body }) => {
+        expect(body.article).toEqual({
+          article_id: 3,
+          title: "Eight pug gifs that remind me of mitch",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "some gifs",
+          created_at: "2020-11-03T09:12:00.000Z",
+          votes: -10,
+        });
+      });
+  });
+  test("404: Should respond with 404 if passed a non-existent id", () => {
+    const newVotes = { inc_votes: 10 };
+    return request(app)
+      .patch("/api/articles/1000")
+      .send(newVotes)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found");
+      });
+  });
+  test("400: Should respond with 400 if passed a wrong datatype", () => {
+    const newVotes = { inc_votes: -10 };
+    return request(app)
+      .patch("/api/articles/notANumber")
+      .send(newVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query datatype");
+      });
+  });
+  test("400: if passed inc_votes of non number type ", () => {
+    const newVotes = { inc_votes: "notANumber" };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(newVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query datatype");
+      });
+  });
+  test("400: if passed object with no inc_values key", () => {
+    const newVotes = { not_inc_votes: 10 };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(newVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Missing data");
+      });
+  });
+});

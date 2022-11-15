@@ -4,6 +4,7 @@ const {
   getArticleById,
   getCommentsOfArticle,
   postComment,
+  patchArticle,
 } = require("./articles.js");
 
 module.exports = {
@@ -12,4 +13,5 @@ module.exports = {
   getArticleById,
   getCommentsOfArticle,
   postComment,
+  patchArticle,
 };
