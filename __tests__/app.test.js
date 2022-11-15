@@ -142,3 +142,27 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: should post a new comment to the database", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "Good article",
+    };
+
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toEqual({
+          article_id: 2,
+          comment_id: 19,
+          author: "icellusedkars",
+          votes: 0,
+          created_at: expect.any(String),
+          body: "Good article",
+        });
+      });
+  });
+});
