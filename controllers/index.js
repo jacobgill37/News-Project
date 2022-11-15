@@ -1,4 +1,6 @@
 const { getTopics } = require("./topics.js");
+const { getUsers } = require("./users.js");
+
 const {
   getArticles,
   getArticleById,
@@ -14,4 +16,5 @@ module.exports = {
   getCommentsOfArticle,
   postComment,
   patchArticle,
+  getUsers,
 };
