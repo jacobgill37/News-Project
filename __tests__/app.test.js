@@ -149,56 +149,6 @@ describe("POST /api/articles/:article_id/comments", () => {
       username: "icellusedkars",
       body: "Good article",
     };
-
-    return request(app)
-      .post("/api/articles/2/comments")
-      .send(newComment)
-      .expect(201)
-      .then(({ body }) => {
-        expect(body.comment).toEqual({
-          article_id: 2,
-          comment_id: 19,
-          author: "icellusedkars",
-          votes: 0,
-          created_at: expect.any(String),
-          body: "Good article",
-        });
-      });
-  });
-  test("404: Should respond with 404 if passed a non-existent id", () => {
-    const newComment = {
-      username: "icellusedkars",
-      body: "Good article",
-    };
-    return request(app)
-      .post("/api/articles/1000/comments")
-      .send(newComment)
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Article not found");
-      });
-  });
-  test("400: Should respond with 400 if passed a wrong datatype", () => {
-    const newComment = {
-      username: "icellusedkars",
-      body: "Good article",
-    };
-    return request(app)
-      .post("/api/articles/notANumber/comments")
-      .send(newComment)
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Invalid query datatype");
-      });
-  });
-});
-
-describe("POST /api/articles/:article_id/comments", () => {
-  test("201: should post a new comment to the database", () => {
-    const newComment = {
-      username: "icellusedkars",
-      body: "Good article",
-    };
     return request(app)
       .post("/api/articles/2/comments")
       .send(newComment)
