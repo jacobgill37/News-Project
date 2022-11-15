@@ -54,6 +54,43 @@ describe("GET /api/articles", () => {
         expect(body.articles).toBeSortedBy("created_at", { descending: true });
       });
   });
+  test("200: should accept a topic query to filter by", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        body.articles.forEach((article) => {
+          expect(article.topic).toBe("cats");
+        });
+      });
+  });
+  test("200: should accept a sort_by query, defaults to DESC", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("votes", { descending: true });
+      });
+  });
+  test("200: should accept a order query", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at");
+      });
+  });
+  test("200: queries should work in conjunction", () => {
+    return request(app)
+      .get("/api/articles?topic=cats&sort_by=comment_count&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("comment_count");
+        body.articles.forEach((article) => {
+          expect(article.topic).toBe("cats");
+        });
+      });
+  });
 });
 
 describe("GET /api/articles/:article_id", () => {
@@ -216,7 +253,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Bad request");
       });
   });
-  test("404: if passed a username that isnt in the db", () => {
+  test("400: if passed a username that isnt in the db", () => {
     const newComment = {
       username: "1234",
       body: "body",
