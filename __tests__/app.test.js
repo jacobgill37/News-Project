@@ -117,6 +117,14 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(body.comments).toBeSortedBy("created_at", { descending: true });
       });
   });
+  test("200: should return empty array if article has no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
+      });
+  });
   test("404: Should respond with 404 if passed a non-existent id", () => {
     return request(app)
       .get("/api/articles/1000/comments")
