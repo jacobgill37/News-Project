@@ -32,21 +32,22 @@ exports.fetchArticleById = (article_id) => {
 
 exports.addComment = (newComment, article_id) => {
   const values = [newComment.body, article_id, newComment.username];
-
-  return db
-    .query(
-      `
-      INSERT INTO comments
-      (body, article_id, author)
-      VALUES
-      ($1, $2, $3)
-      RETURNING *;
-      `,
-      values
-    )
-    .then((result) => {
-      return result.rows[0];
-    });
+  return this.fetchArticleById(article_id).then(() => {
+    return db
+      .query(
+        `
+        INSERT INTO comments
+        (body, article_id, author)
+        VALUES
+        ($1, $2, $3)
+        RETURNING *;
+        `,
+        values
+      )
+      .then((result) => {
+        return result.rows[0];
+      });
+  });
 };
 
 exports.fetchCommentsOfArticle = (article_id) => {

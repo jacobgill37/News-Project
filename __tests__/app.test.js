@@ -109,7 +109,7 @@ describe("GET /api/articles/:article_id/comments", () => {
         });
       });
   });
-  test("should be ordered by date desc", () => {
+  test("200: should be ordered by date desc", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
@@ -189,6 +189,93 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Invalid query datatype");
+      });
+  });
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: should post a new comment to the database", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "Good article",
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toEqual({
+          article_id: 2,
+          comment_id: 19,
+          author: "icellusedkars",
+          votes: 0,
+          created_at: expect.any(String),
+          body: "Good article",
+        });
+      });
+  });
+  test("404: Should respond with 404 if passed a non-existent id", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "Good article",
+    };
+    return request(app)
+      .post("/api/articles/1000/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found");
+      });
+  });
+  test("400: Should respond with 400 if passed wrong id datatype", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "Good article",
+    };
+    return request(app)
+      .post("/api/articles/notANumber/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query datatype");
+      });
+  });
+  test("400: should respond with 400 if passed a comment with missing data", () => {
+    const newComment = {
+      username: "icellusedkars",
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Missing data");
+      });
+  });
+  test("400: if passed comment with data of wrong type", () => {
+    const newComment = {
+      username: 1234,
+      body: "body",
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("404: if passed a username that isnt in the db", () => {
+    const newComment = {
+      username: "1234",
+      body: "body",
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
       });
   });
 });

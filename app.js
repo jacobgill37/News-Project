@@ -22,7 +22,9 @@ app.use((err, req, res, next) => {
   if (err.code === "22P02") {
     res.status(400).send({ msg: "Invalid query datatype" });
   } else if (err.code === "23503") {
-    res.status(404).send({ msg: "Article not found" });
+    res.status(400).send({ msg: "Bad request" });
+  } else if (err.code === "23502") {
+    res.status(400).send({ msg: "Missing data" });
   } else {
     next(err);
   }
@@ -34,11 +36,6 @@ app.use((err, req, res, next) => {
   } else {
     next(err);
   }
-});
-
-app.use((err, req, res, next) => {
-  console.log(err);
-  res.status(500).send("server error!");
 });
 
 app.use((err, req, res, next) => {
