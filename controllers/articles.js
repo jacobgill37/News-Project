@@ -8,9 +8,13 @@ const {
 
 exports.getArticles = (req, res, next) => {
   const { topic, sort_by, order } = req.query;
-  return fetchArticles(topic, sort_by, order).then((articles) => {
-    res.send({ articles });
-  });
+  return fetchArticles(topic, sort_by, order)
+    .then((articles) => {
+      res.send({ articles });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.getArticleById = (req, res, next) => {

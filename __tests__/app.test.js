@@ -91,6 +91,30 @@ describe("GET /api/articles", () => {
         });
       });
   });
+  test("should return [] if passed topic that doesnt exist", () => {
+    return request(app)
+      .get("/api/articles?topic=noTopic")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toEqual([]);
+      });
+  });
+  test("400: if passed invalid sort_by", () => {
+    return request(app)
+      .get("/api/articles?sort_by=notASort_by")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid sort_by query");
+      });
+  });
+  test("400: if passed invalid order", () => {
+    return request(app)
+      .get("/api/articles?order=notAnOrder")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid order query");
+      });
+  });
 });
 
 describe("GET /api/articles/:article_id", () => {
