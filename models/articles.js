@@ -36,18 +36,19 @@ exports.addComment = (newComment, article_id) => {
   return db
     .query(
       `
-    INSERT INTO comments
+      INSERT INTO comments
       (body, article_id, author)
-    VALUES
+      VALUES
       ($1, $2, $3)
-    RETURNING *;
-  `,
+      RETURNING *;
+      `,
       values
     )
     .then((result) => {
       return result.rows[0];
     });
 };
+
 exports.fetchCommentsOfArticle = (article_id) => {
   // Check if article_id is valid using previous function
   return this.fetchArticleById(article_id)

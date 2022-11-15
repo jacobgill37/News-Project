@@ -165,4 +165,30 @@ describe("POST /api/articles/:article_id/comments", () => {
         });
       });
   });
+  test("404: Should respond with 404 if passed a non-existent id", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "Good article",
+    };
+    return request(app)
+      .post("/api/articles/1000/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found");
+      });
+  });
+  test("400: Should respond with 400 if passed a wrong datatype", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "Good article",
+    };
+    return request(app)
+      .post("/api/articles/notANumber/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query datatype");
+      });
+  });
 });
