@@ -1,7 +1,6 @@
 const { getTopics } = require("./topics.js");
 const { getUsers } = require("./users.js");
 const { deleteComment } = require("./comments.js");
-const { getEndpoints } = require("./api.js");
 
 const {
   getArticles,
@@ -20,5 +19,4 @@ module.exports = {
   patchArticle,
   getUsers,
   deleteComment,
-  getEndpoints,
 };
