@@ -1,4 +1,5 @@
 const db = require("../db/connection.js");
+const { checkTopicExists } = require("../db/utils/checkTopicExists.js");
 
 exports.fetchArticles = (topic, sort_by = "created_at", order = "DESC") => {
   const values = [];
@@ -26,9 +27,11 @@ exports.fetchArticles = (topic, sort_by = "created_at", order = "DESC") => {
       FROM articles
       LEFT JOIN comments ON articles.article_id = comments.article_id`;
 
+  let promises = [];
   if (topic) {
     queryText += " WHERE topic = $1";
     values.push(topic);
+    promises.push(checkTopicExists(topic));
   }
 
   queryText += `
@@ -38,8 +41,10 @@ exports.fetchArticles = (topic, sort_by = "created_at", order = "DESC") => {
 
   queryText += ` ORDER BY ${sort_by} ${order};`;
 
-  return db.query(queryText, values).then((result) => {
-    return result.rows;
+  promises.unshift(db.query(queryText, values));
+
+  return Promise.all(promises).then((result) => {
+    return result[0].rows;
   });
 };
 

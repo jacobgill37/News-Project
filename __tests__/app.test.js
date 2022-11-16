@@ -59,6 +59,7 @@ describe("GET /api/articles", () => {
       .get("/api/articles?topic=cats")
       .expect(200)
       .then(({ body }) => {
+        expect(body.articles.length).toBe(1);
         body.articles.forEach((article) => {
           expect(article.topic).toBe("cats");
         });
@@ -91,12 +92,20 @@ describe("GET /api/articles", () => {
         });
       });
   });
-  test("should return [] if passed topic that doesnt exist", () => {
+  test("should return [] if passed topic that exists but has no articles", () => {
     return request(app)
-      .get("/api/articles?topic=noTopic")
+      .get("/api/articles?topic=paper")
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toEqual([]);
+      });
+  });
+  test("404: if passed a topic that doesnt exist", () => {
+    return request(app)
+      .get("/api/articles?topic=noTopic")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Topic not found");
       });
   });
   test("400: if passed invalid sort_by", () => {
