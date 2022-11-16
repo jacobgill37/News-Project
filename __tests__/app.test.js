@@ -67,10 +67,10 @@ describe("GET /api/articles", () => {
   });
   test("200: should accept a sort_by query, defaults to DESC", () => {
     return request(app)
-      .get("/api/articles?sort_by=votes")
+      .get("/api/articles?sort_by=title")
       .expect(200)
       .then(({ body }) => {
-        expect(body.articles).toBeSortedBy("votes", { descending: true });
+        expect(body.articles).toBeSortedBy("title", { descending: true });
       });
   });
   test("200: should accept a order query", () => {
