@@ -397,4 +397,29 @@ describe("GET /api/users", () => {
   });
 });
 
-describe("DELETE /api/comments/:comment_id", () => {});
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: should delete comment, returning nothing", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+  test("404: if comment id is non-existent but valid ", () => {
+    return request(app)
+      .delete("/api/comments/10000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Comment not found");
+      });
+  });
+  test("400: if comment_id is wrong datatype", () => {
+    return request(app)
+      .delete("/api/comments/badNumber")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query datatype");
+      });
+  });
+});
