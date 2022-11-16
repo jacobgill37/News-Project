@@ -54,6 +54,76 @@ describe("GET /api/articles", () => {
         expect(body.articles).toBeSortedBy("created_at", { descending: true });
       });
   });
+  test("200: should accept a topic query to filter by", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(1);
+        body.articles.forEach((article) => {
+          expect(article.topic).toBe("cats");
+        });
+      });
+  });
+  test("200: should accept a sort_by query, defaults to DESC", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("votes", { descending: true });
+      });
+  });
+  test("200: should accept a order query", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at");
+      });
+  });
+  test("200: queries should work in conjunction", () => {
+    return request(app)
+      .get("/api/articles?topic=cats&sort_by=comment_count&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("comment_count");
+        body.articles.forEach((article) => {
+          expect(article.topic).toBe("cats");
+        });
+      });
+  });
+  test("should return [] if passed topic that exists but has no articles", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toEqual([]);
+      });
+  });
+  test("404: if passed a topic that doesnt exist", () => {
+    return request(app)
+      .get("/api/articles?topic=noTopic")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Topic not found");
+      });
+  });
+  test("400: if passed invalid sort_by", () => {
+    return request(app)
+      .get("/api/articles?sort_by=notASort_by")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid sort_by query");
+      });
+  });
+  test("400: if passed invalid order", () => {
+    return request(app)
+      .get("/api/articles?order=notAnOrder")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid order query");
+      });
+  });
 });
 
 describe("GET /api/articles/:article_id", () => {
@@ -216,7 +286,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Bad request");
       });
   });
-  test("404: if passed a username that isnt in the db", () => {
+  test("400: if passed a username that isnt in the db", () => {
     const newComment = {
       username: "1234",
       body: "body",
