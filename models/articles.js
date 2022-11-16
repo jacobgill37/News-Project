@@ -29,8 +29,7 @@ exports.fetchArticleById = (article_id) => {
     FROM articles
     LEFT JOIN comments ON articles.article_id = comments.article_id
     WHERE articles.article_id = $1
-    GROUP BY articles.author, title, articles.article_id,
-        topic, articles.created_at, articles.votes;
+    GROUP BY articles.article_id;
     `,
       [article_id]
     )
