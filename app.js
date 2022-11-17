@@ -5,6 +5,10 @@ const app = express();
 
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.send({ msg: "Welcome to the news" });
+});
+
 app.use("/api", apiRouter);
 
 app.use((err, req, res, next) => {
