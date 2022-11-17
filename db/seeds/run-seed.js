@@ -6,6 +6,4 @@ const runSeed = () => {
   return seed(devData).then(() => db.end());
 };
 
-console.log(process.env.DATABASE_URL);
-
 runSeed();
