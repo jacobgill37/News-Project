@@ -13,4 +13,10 @@ apiRouter.use("/users", usersRouter);
 apiRouter.use("/articles", articlesRouter);
 apiRouter.use("/comments", commentsRouter);
 
+apiRouter.get("/seed", (req, res) => {
+  process.env.NODE_ENV = "production";
+  require("../db/seeds/run-seed.js");
+  res.send({ msg: "Production database seeded" });
+});
+
 module.exports = apiRouter;
