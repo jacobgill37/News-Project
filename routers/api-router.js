@@ -17,7 +17,9 @@ apiRouter.get("/seed", (req, res) => {
   process.env.NODE_ENV = "production";
   process.env.DATABASE_URL =
     "postgres://sjbnfswb:FhdEp8sTmI_Smk3MR_xxTgwtL2J83pNH@lucky.db.elephantsql.com/sjbnfswb";
-  require("../db/seeds/run-seed.js");
+  const required = require("../db/seeds/run-seed.js");
+  console.log("hello", process.env.NODE_ENV);
+
   res.send({
     msg: "Production database seeded",
     URL: process.env.DATABASE_URL,
