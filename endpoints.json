@@ -40,6 +40,19 @@
       ]
     }
   },
+  "GET /api/users/:username": {
+    "description": "serves a single user",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "username",
+          "name": "firstName",
+          "avatar_url": "<link_to_image>"
+        }
+      ]
+    }
+  },
   "GET /api/articles/:article_id": {
     "description": "serves a single article with given id",
     "queries": [],
