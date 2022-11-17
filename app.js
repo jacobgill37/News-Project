@@ -1,30 +1,11 @@
 const express = require("express");
-const {
-  getTopics,
-  getArticles,
-  getArticleById,
-  getCommentsOfArticle,
-  postComment,
-  patchArticle,
-  getUsers,
-  deleteComment,
-  getEndpoints,
-} = require("./controllers/index.js");
+const apiRouter = require("./routers/api-router.js");
 
 const app = express();
 
 app.use(express.json());
 
-app.get("/api", getEndpoints);
-app.get("/api/topics", getTopics);
-app.get("/api/users", getUsers);
-app.get("/api/articles", getArticles);
-app.get("/api/articles/:article_id", getArticleById);
-app.get("/api/articles/:article_id/comments", getCommentsOfArticle);
-
-app.post("/api/articles/:article_id/comments", postComment);
-app.patch("/api/articles/:article_id", patchArticle);
-app.delete("/api/comments/:comment_id", deleteComment);
+app.use("/api", apiRouter);
 
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
