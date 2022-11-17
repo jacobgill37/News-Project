@@ -6,7 +6,7 @@ This project is a REST api designed to simulate a news site. It allows clients t
 
 ## Currently hosted at:
 
-`https://zany-jade-viper-garb.cyclic.app`
+[https://zany-jade-viper-garb.cyclic.app](https://zany-jade-viper-garb.cyclic.app)
 
 ## Cloning
 
