@@ -16,11 +16,7 @@ apiRouter.use("/comments", commentsRouter);
 apiRouter.get("/seed", (req, res) => {
   require("../db/seeds/run-seed.js");
 
-  res.send({
-    msg: "Production database seeded",
-    URL: process.env.DATABASE_URL,
-    env: process.env.NODE_ENV,
-  });
+  res.send({ msg: "Production database seeded" });
 });
 
 module.exports = apiRouter;
