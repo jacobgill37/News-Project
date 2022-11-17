@@ -4,6 +4,10 @@
 
 This project is a REST api designed to simulate a news site. It allows clients to retrieve articles, comments, users and topics. As well as allowing the posting of new comments, deleting of comments and the updating of existing article's vote counts.
 
+## Currently hosted at:
+
+`https://zany-jade-viper-garb.cyclic.app`
+
 ## Cloning
 
 The repo will need to be cloned if you will want to host your own version. Use the following link:
