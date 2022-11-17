@@ -2,11 +2,16 @@
 
 ## Project summary
 
-This project is a REST api designed to simulate a news site.
+This project is a REST api designed to simulate a news site. It allows clients to retrieve articles, comments, users and topics. As well as allowing the posting of new comments, deleting of comments and the updating of existing article's vote counts.
+
+## Cloning
+
+The repo will need to be cloned if you will want to host your own version. Use the following link:
+`https://github.com/jacobgill37/News-Project.git`
 
 ## Installing dependencies
 
-All project dependencies can be installed using
+All project dependencies can be installed using:
 
 ```
 npm install
