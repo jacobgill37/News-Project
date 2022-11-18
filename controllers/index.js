@@ -5,6 +5,7 @@ const { getEndpoints } = require("./api.js");
 
 const {
   getArticles,
+  postArticle,
   getArticleById,
   getCommentsOfArticle,
   postComment,
@@ -14,6 +15,7 @@ const {
 module.exports = {
   getTopics,
   getArticles,
+  postArticle,
   getArticleById,
   getCommentsOfArticle,
   postComment,
