@@ -8,6 +8,10 @@ This project is a REST api designed to simulate a news site. It allows clients t
 
 [https://zany-jade-viper-garb.cyclic.app](https://zany-jade-viper-garb.cyclic.app)
 
+## Endpoints
+
+Use GET `/api` to view a list of available endpoints and their descriptions.
+
 ## Cloning
 
 The repo will need to be cloned if you will want to host your own version. Use the following link:
