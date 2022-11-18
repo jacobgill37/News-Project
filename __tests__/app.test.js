@@ -33,7 +33,7 @@ describe("GET /api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
-        expect(body.articles.length).toBe(12);
+        expect(body.articles.length).toBe(10);
         body.articles.forEach((article) => {
           expect(article).toMatchObject({
             author: expect.any(String),
@@ -82,14 +82,55 @@ describe("GET /api/articles", () => {
         expect(body.articles).toBeSortedBy("created_at");
       });
   });
-  test("200: queries should work in conjunction", () => {
+  test("200: should accept a limit query", () => {
     return request(app)
-      .get("/api/articles?topic=cats&sort_by=comment_count&order=asc")
+      .get("/api/articles?limit=5")
       .expect(200)
       .then(({ body }) => {
+        expect(body.articles.length).toBe(5);
+      });
+  });
+  test("200: limit query should default to 10 ", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(10);
+      });
+  });
+  test('200: should accept a "p" query specifying on which page to start (0 indexed)', () => {
+    return request(app)
+      .get("/api/articles?p=1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBeLessThanOrEqual(10);
+        expect(body.articles[0]).toMatchObject({
+          title: "Am I a cat?",
+          topic: "mitch",
+          author: "icellusedkars",
+          created_at: "2020-01-15T22:21:00.000Z",
+          votes: 0,
+        });
+      });
+  });
+  test("200: response object should have a total_count property, displaying the total number of articles", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.total_count).toBe(12);
+      });
+  });
+  test("200: queries should work in conjunction", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&sort_by=comment_count&limit=6&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.total_count).toBe(11);
+        expect(body.articles.length).toBeLessThanOrEqual(6);
         expect(body.articles).toBeSortedBy("comment_count");
         body.articles.forEach((article) => {
-          expect(article.topic).toBe("cats");
+          expect(article.topic).toBe("mitch");
         });
       });
   });
