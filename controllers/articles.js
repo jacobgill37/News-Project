@@ -4,6 +4,7 @@ const {
   fetchCommentsOfArticle,
   addComment,
   updateArticle,
+  addArticle,
 } = require("../models/articles.js");
 
 exports.getArticles = (req, res, next) => {
@@ -11,6 +12,17 @@ exports.getArticles = (req, res, next) => {
   return fetchArticles(topic, sort_by, order)
     .then((articles) => {
       res.send({ articles });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.postArticle = (req, res, next) => {
+  const newArticle = req.body;
+  return addArticle(newArticle)
+    .then((article) => {
+      res.status(201).send({ article });
     })
     .catch((err) => {
       next(err);

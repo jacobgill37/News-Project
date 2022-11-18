@@ -127,6 +127,74 @@ describe("GET /api/articles", () => {
   });
 });
 
+describe("POST /api/articles", () => {
+  test("201: should post a new article to the db", () => {
+    const newArticle = {
+      title: "Living in the shadow of a great man 2",
+      topic: "mitch",
+      author: "butter_bridge",
+      body: "I find this existence challenging",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.article).toMatchObject({
+          title: "Living in the shadow of a great man 2",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          article_id: 13,
+          votes: 0,
+          created_at: expect.any(String),
+          comment_count: "0",
+        });
+      });
+  });
+  test("400: if any of the data is missing", async () => {
+    const newArticleNoTitle = {
+      topic: "mitch",
+      author: "butter_bridge",
+      body: "I find this existence challenging",
+    };
+    const newArticleNoBody = {
+      title: "Living in the shadow of a great man 2",
+      topic: "mitch",
+      author: "butter_bridge",
+    };
+    await request(app)
+      .post("/api/articles")
+      .send(newArticleNoTitle)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Missing data");
+      });
+    await request(app)
+      .post("/api/articles")
+      .send(newArticleNoBody)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Missing data");
+      });
+  });
+  test("404: if username/author is not in db", async () => {
+    const newArticle = {
+      title: "Living in the shadow of a great man 2",
+      topic: "mitch",
+      author: "notInDb",
+      body: "I find this existence challenging",
+    };
+    await request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Username not found");
+      });
+  });
+});
+
 describe("GET /api/articles/:article_id", () => {
   test("200: should respond with the given article", () => {
     return request(app)
@@ -275,20 +343,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Missing data");
       });
   });
-  test("400: if passed comment with data of wrong type", () => {
-    const newComment = {
-      username: 1234,
-      body: "body",
-    };
-    return request(app)
-      .post("/api/articles/2/comments")
-      .send(newComment)
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Bad request");
-      });
-  });
-  test("400: if passed a username that isnt in the db", () => {
+  test("404: if passed a username that isnt in the db", () => {
     const newComment = {
       username: "1234",
       body: "body",
@@ -296,9 +351,9 @@ describe("POST /api/articles/:article_id/comments", () => {
     return request(app)
       .post("/api/articles/2/comments")
       .send(newComment)
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Bad request");
+        expect(body.msg).toBe("Username not found");
       });
   });
 });

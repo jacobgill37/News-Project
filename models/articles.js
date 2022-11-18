@@ -122,3 +122,19 @@ exports.updateArticle = (newVotes, article_id) => {
       return result.rows[0];
     });
 };
+
+exports.addArticle = (newArticle) => {
+  const { author, title, body, topic } = newArticle;
+  const values = [author, title, body, topic];
+  const sqlText = `
+    INSERT INTO articles
+      (author, title, body, topic)
+    VALUES
+      ($1, $2, $3, $4)
+    RETURNING *;
+  `;
+
+  return db.query(sqlText, values).then((result) => {
+    return this.fetchArticleById(result.rows[0].article_id);
+  });
+};
