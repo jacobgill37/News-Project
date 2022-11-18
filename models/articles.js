@@ -1,7 +1,13 @@
 const db = require("../db/connection.js");
 const { checkTopicExists } = require("../db/utils/checkTopicExists.js");
 
-exports.fetchArticles = (topic, sort_by = "created_at", order = "DESC") => {
+exports.fetchArticles = (
+  topic,
+  sort_by = "created_at",
+  order = "DESC",
+  limit = 10,
+  p = 0
+) => {
   const values = [];
   const validSort_by = [
     "author",
@@ -27,11 +33,16 @@ exports.fetchArticles = (topic, sort_by = "created_at", order = "DESC") => {
       FROM articles
       LEFT JOIN comments ON articles.article_id = comments.article_id`;
 
+  let total_countQueryText = "SELECT * FROM articles";
+  let total_countValues = [];
+
   let promises = [];
   if (topic) {
-    queryText += " WHERE topic = $1";
+    queryText += " WHERE topic = $3";
     values.push(topic);
     promises.push(checkTopicExists(topic));
+    total_countQueryText += " WHERE topic = $1";
+    total_countValues.push(topic);
   }
 
   queryText += `
@@ -39,12 +50,16 @@ exports.fetchArticles = (topic, sort_by = "created_at", order = "DESC") => {
                topic, articles.created_at, articles.votes
       `;
 
-  queryText += ` ORDER BY ${sort_by} ${order};`;
+  queryText += ` ORDER BY ${sort_by} ${order} LIMIT $1 OFFSET $2;`;
+  const offset = p * limit;
+  values.unshift(offset);
+  values.unshift(limit);
 
+  promises.unshift(db.query(total_countQueryText, total_countValues));
   promises.unshift(db.query(queryText, values));
 
   return Promise.all(promises).then((result) => {
-    return result[0].rows;
+    return [result[0].rows, result[1].rows.length];
   });
 };
 

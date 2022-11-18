@@ -8,10 +8,10 @@ const {
 } = require("../models/articles.js");
 
 exports.getArticles = (req, res, next) => {
-  const { topic, sort_by, order } = req.query;
-  return fetchArticles(topic, sort_by, order)
-    .then((articles) => {
-      res.send({ articles });
+  const { topic, sort_by, order, limit, p } = req.query;
+  return fetchArticles(topic, sort_by, order, limit, p)
+    .then(([articles, total_count]) => {
+      res.send({ articles, total_count });
     })
     .catch((err) => {
       next(err);
