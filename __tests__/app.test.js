@@ -449,6 +449,83 @@ describe("DELETE /api/comments/:comment_id", () => {
   });
 });
 
+describe("PATCH /api/comments/:comment_id", () => {
+  test("200: update vote count if passed postive num", () => {
+    const newVotes = { inc_votes: 10 };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(newVotes)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          comment_id: 1,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 26,
+          author: "butter_bridge",
+          article_id: 9,
+          created_at: "2020-04-06T12:17:00.000Z",
+        });
+      });
+  });
+  test("200: update vote count if passed negative num", () => {
+    const newVotes = { inc_votes: -10 };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(newVotes)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          comment_id: 1,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 6,
+          author: "butter_bridge",
+          article_id: 9,
+          created_at: "2020-04-06T12:17:00.000Z",
+        });
+      });
+  });
+  test("404: if passed a valid but non-existent id", () => {
+    const newVotes = { inc_votes: -10 };
+    return request(app)
+      .patch("/api/comments/1000")
+      .send(newVotes)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Comment not found");
+      });
+  });
+  test("400: if passed a non-valid id", () => {
+    const newVotes = { inc_votes: -10 };
+    return request(app)
+      .patch("/api/comments/invalidId")
+      .send(newVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query datatype");
+      });
+  });
+  test("400: if passed a request object with no number", () => {
+    const newVotes = { inc_votes: "This isn't a number" };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(newVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query datatype");
+      });
+  });
+  test("400: if passed a request object with no inc_votes key", () => {
+    const newVotes = { not_inc_votes: 1 };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(newVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Missing data");
+      });
+  });
+});
+
 describe("GET /api", () => {
   test("200: should return a json with all available endpoints", () => {
     return request(app)

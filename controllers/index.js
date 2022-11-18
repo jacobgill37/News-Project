@@ -1,6 +1,6 @@
 const { getTopics } = require("./topics.js");
 const { getUsers, getUserByUsername } = require("./users.js");
-const { deleteComment } = require("./comments.js");
+const { deleteComment, patchComment } = require("./comments.js");
 const { getEndpoints } = require("./api.js");
 
 const {
@@ -22,4 +22,5 @@ module.exports = {
   deleteComment,
   getEndpoints,
   getUserByUsername,
+  patchComment,
 };
